@@ -13,7 +13,7 @@ class Worker:
         self.output_path = './outputs/output.csv'
         self.gps_file = open('./inputs/gps.txt','r')
         self.sonar_file = open('./inputs/sonar.csv','r')
-        self.config_file = open('./inputs/config/config.csv')
+        self.config_file = open('./inputs/config.csv')
 
 
     def get_gps_csv_dict(self):

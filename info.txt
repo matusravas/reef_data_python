@@ -4,7 +4,7 @@
 
 - V adresari, z ktoreho spustas main.exe, musia byt dva adresare:
         
-        1. inputs - vstupy adresar, obsahuje subory: gps.txt, sonar.csv, config.csv
+        1. inputs - vstupy adresar, obsahuje subory: gps.txt, sonar.csv, a adresar config, v ktorom je config.csv
                 a)   gps.txt - subor z gps
                 b)   sonar.csv - subor zo sonaru
                 c)   config.csv - subor, v ktorom si spravis konfiguraciu (je to csv, stlpce su oddelene Tabulatorom)
