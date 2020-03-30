@@ -1,6 +1,7 @@
 import csv
 import datetime as dt
 import time
+import sys
 from calendar import timegm
 from typing import List
 from .dtos import OUTPUT_DATA_DTO, GPS_DTO, SONAR_DTO
@@ -11,9 +12,20 @@ class Worker:
     def __init__(self):
         self.data: List[OUTPUT_DATA_DTO] = []
         self.output_path = './outputs/output.csv'
-        self.gps_file = open('./inputs/gps.txt','r')
-        self.sonar_file = open('./inputs/sonar.csv','r')
-        self.config_file = open('./inputs/config.csv')
+        self.gps_file = None
+        self.sonar_file = None
+        self.config_file = None
+
+    def open_files(self):
+        try:
+            self.gps_file = open('./inputs/gps.csv','r')
+            self.sonar_file = open('./inputs/sonar.csv','r')
+            self.config_file = open('./inputs/config.csv')
+        except FileNotFoundError as err:
+            print(err)
+            print('Warning, all input files should be .csv')
+            input('To finish press Enter...')
+            sys.exit()
 
 
     def get_gps_csv_dict(self):
@@ -48,7 +60,6 @@ class Worker:
     def map_data(self):
         gps_data = self.get_gps_csv_dict()
         sonar_data = self.get_sonar_csv_dict()
-        print('Data')
         loops = 0
         s = 0
         for gps_row in gps_data:
@@ -66,7 +77,7 @@ class Worker:
                     s = i
                     self.data.append(item)
                     break
-        print(f'Data mapped in {loops} loops')
+        print(f'Data processed in {loops} loops')
 
 
     def write_output(self):
@@ -82,4 +93,4 @@ class Worker:
         self.gps_file.close()
         self.sonar_file.close()
         print('Finished, open outputs directory to see the output.')
-        input("Press Enter to continue...")
+        input("Press Enter to finish...")
