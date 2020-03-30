@@ -4,14 +4,15 @@
 
 - V adresari, z ktoreho spustas main.exe, musia byt dva adresare:
         
-        1. inputs - vstupy adresar, obsahuje subory: gps.txt, sonar.csv, a adresar config, v ktorom je config.csv
+        1. inputs - vstupy adresar, obsahuje subory: gps.txt, sonar.csv, config.csv
                 a)   gps.txt - subor z gps
                 b)   sonar.csv - subor zo sonaru
                 c)   config.csv - subor, v ktorom si spravis konfiguraciu (je to csv, stlpce su oddelene Tabulatorom)
-                     - config.csv obsahuje stlpce pre casovy posun a nadmorsku vysku:
+                     
+		-- config.csv obsahuje stlpce pre casovy posun a nadmorsku vysku:
                         hodiny  minuty  sekundy vyska
 
-        **Ak je vsetko nasledujuce splnene spusti main.exe**
+       	**Ak je vsetko nasledujuce splnene spusti main.exe**
 
 
         2. outputs - vystupny adresar, sem sa ulozi vygenerovany vystup: output.csv
