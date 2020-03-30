@@ -81,4 +81,5 @@ class Worker:
         self.config_file.close()
         self.gps_file.close()
         self.sonar_file.close()
-        print('Output created')
+        print('Finished, open outputs directory to see the output.')
+        input("Press Enter to continue...")
