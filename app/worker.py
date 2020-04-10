@@ -82,7 +82,7 @@ class Worker:
         hh, mm = get_mesurement_time(self.data[0].datetime,self.data[len(self.data)-1].datetime)
         print(f'Data processed in {loops} loops')
         print(f'Measurement time: {hh} hours {mm} minutes')
-        print(f'\nExecution took {round(time.time() - begin,2)} seconds')
+        # print(f'\nExecution took {round(time.time() - begin,2)} seconds')
 
 
     def write_output(self):
