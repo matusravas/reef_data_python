@@ -3,7 +3,7 @@ import time
 import sys
 from typing import List
 from .dtos import OUTPUT_DATA_DTO, GPS_DTO, SONAR_DTO
-from .utils import get_gps_timestamp, get_sonar_timestamp
+from .utils import get_gps_timestamp, get_sonar_timestamp, get_mesurement_time
 
 class Worker:
 
@@ -60,6 +60,7 @@ class Worker:
         gps_data = self.get_gps_csv_dict()
         sonar_data = self.get_sonar_csv_dict()
         loops = 0
+        avg_depth, sum_depth = 0,0
         s = 0
         for gps_row in gps_data:
             item: OUTPUT_DATA_DTO = OUTPUT_DATA_DTO(gps_row['title'], gps_row['lat'], gps_row['lon'], 0, 0, '', 0)
@@ -70,15 +71,21 @@ class Worker:
                 sonar_timestamp_next = sonar_data[i+1]['timestamp'] if i+1 < len(sonar_data) else sonar_timestamp 
 
                 if abs(gps_row['timestamp'] - sonar_timestamp) < abs(gps_row['timestamp'] - sonar_timestamp_next):
-                    item.depth = sonar_data[i]['depth']
+                    depth = sonar_data[i]['depth']
+                    sum_depth += depth
+                    item.depth = depth
                     item.altitude = sonar_data[i]['altitude']
                     item.datetime = gps_row['datetime']
                     item.time_diff = round(gps_row['timestamp'] - sonar_timestamp, 2)
                     s = i
                     self.data.append(item)
                     break
+        avg_depth = round(sum_depth/len(self.data),2)
+        hh, mm = get_mesurement_time(self.data[0].datetime,self.data[len(self.data)-1].datetime)
         print(f'Data processed in {loops} loops')
-        print(f'Execution took {time.time() - begin} seconds')
+        print(f'Average depth: {avg_depth} meters')
+        print(f'Measurement time: {hh} hours {mm} minutes')
+        print(f'\nExecution took {round(time.time() - begin,2)} seconds')
 
 
     def write_output(self):

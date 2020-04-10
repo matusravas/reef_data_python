@@ -25,3 +25,10 @@ def get_gps_timestamp(date_str:str, time_str:str):
     time_str = time_part+'.'+ff
     datetime_str = dt.datetime.strptime(date_str+ ' '+time_str,'%Y.%m.%d %H:%M:%S.%f')
     return datetime_str.timestamp()
+
+def get_mesurement_time(begin:str,end:str):
+    f = '%Y.%m.%d %H:%M:%S.%f'
+    begin_date_obj = dt.datetime.strptime(begin,f)
+    end_date_obj = dt.datetime.strptime(end,f)
+    delta = end_date_obj - begin_date_obj
+    return (delta.seconds//3600, delta.seconds//60)
