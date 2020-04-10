@@ -16,7 +16,8 @@ class OUTPUT_DATA_DTO:
             "depth": self.depth,
             "altitude": self.altitude,
             "datetime": self.datetime,
-            "time_diff": self.time_diff 
+            "time_diff": self.time_diff,
+            "error": self.error
         }
 
 class GPS_DTO:

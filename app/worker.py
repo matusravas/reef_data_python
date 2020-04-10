@@ -22,7 +22,7 @@ class Worker:
         except FileNotFoundError as err:
             print(err)
             print('Warning, all input files should be .csv')
-            input('To finish press Enter...')
+            input('Press Enter to exit...')
             sys.exit()
 
 
@@ -40,11 +40,13 @@ class Worker:
         fieldnames = ['lat', 'lon', 'depth', 'e1', 'e2', 'peaksv', 'datetime', 'track_name']
         reader = csv.DictReader(self.sonar_file,fieldnames,delimiter=',')
         data: List[SONAR_DTO] = []
-        *delta, altitude = self.get_config_data()
+        *deltas, altitude = self.get_config_data()
         next(reader) #skip header
         for row in reader:
-            item: SONAR_DTO = SONAR_DTO(round(float(row['depth']),2), round(altitude - float(row['depth']),2), get_sonar_timestamp(row['datetime'], delta))
-            data.append(item.serialize())
+            depth = round(float(row['depth']),2) 
+            if depth != 0.0: #ignore rows where depth is equal 0
+                item: SONAR_DTO = SONAR_DTO(depth, round(altitude - float(row['depth']),2), get_sonar_timestamp(row['datetime'], deltas))
+                data.append(item.serialize())
         return data
 
 
@@ -60,38 +62,34 @@ class Worker:
         gps_data = self.get_gps_csv_dict()
         sonar_data = self.get_sonar_csv_dict()
         loops = 0
-        avg_depth, sum_depth = 0,0
         s = 0
         for gps_row in gps_data:
             item: OUTPUT_DATA_DTO = OUTPUT_DATA_DTO(gps_row['title'], gps_row['lat'], gps_row['lon'], 0, 0, '', 0)
-            loops+=1
+            loops += 1
             for i in range(s, len(sonar_data)):
-                loops+=1
+                loops += 1
                 sonar_timestamp = sonar_data[i]['timestamp'] 
                 sonar_timestamp_next = sonar_data[i+1]['timestamp'] if i+1 < len(sonar_data) else sonar_timestamp 
 
                 if abs(gps_row['timestamp'] - sonar_timestamp) < abs(gps_row['timestamp'] - sonar_timestamp_next):
-                    depth = sonar_data[i]['depth']
-                    sum_depth += depth
-                    item.depth = depth
+                    item.depth = sonar_data[i]['depth']
                     item.altitude = sonar_data[i]['altitude']
                     item.datetime = gps_row['datetime']
                     item.time_diff = round(gps_row['timestamp'] - sonar_timestamp, 2)
                     s = i
                     self.data.append(item)
                     break
-        avg_depth = round(sum_depth/len(self.data),2)
         hh, mm = get_mesurement_time(self.data[0].datetime,self.data[len(self.data)-1].datetime)
         print(f'Data processed in {loops} loops')
-        print(f'Average depth: {avg_depth} meters')
         print(f'Measurement time: {hh} hours {mm} minutes')
         print(f'\nExecution took {round(time.time() - begin,2)} seconds')
 
 
     def write_output(self):
         output_file = open(self.output_path,'w',newline='')
-        writer = csv.DictWriter(output_file,['title','lat','lon','altitude','depth','datetime','time_diff'], delimiter='\t')
+        writer = csv.DictWriter(output_file,['title','lat','lon','altitude','depth','datetime','time_diff','error'], delimiter='\t')
         for row in self.data:
+            row.error = 'error' if abs(row.time_diff) > 1 else ''
             writer.writerow(row.serialize())
         output_file.close()
         print(f'Output data written to {self.output_path[2:]}')
