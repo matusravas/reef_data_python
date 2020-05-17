@@ -21,8 +21,8 @@ def get_gps_timestamp(date_str:str, time_str:str):
             h = str(hh+1)
     time_part = ':'.join([h,m,s])
     time_str = time_part+'.'+ff
-    datetime_str = dt.datetime.strptime(date_str+ ' '+time_str,'%Y.%m.%d %H:%M:%S.%f')
-    return datetime_str.timestamp()
+    datetime_obj = dt.datetime.strptime(date_str+ ' '+time_str,'%Y.%m.%d %H:%M:%S.%f')
+    return datetime_obj.timestamp()
 
 def get_mesurement_time(begin:str,end:str):
     f = '%Y.%m.%d %H:%M:%S.%f'
