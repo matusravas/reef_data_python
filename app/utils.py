@@ -1,7 +1,7 @@
 import datetime as dt
 from typing import Tuple
 
-def get_sonar_timestamp(date_str:str,delta: Tuple[int]):
+def get_sonar_timestamp(date_str:str,delta: Tuple[int,int,int]):
         datetime_obj = dt.datetime.strptime(date_str,'%Y-%m-%dT%H:%M:%S')
         h,m,s = delta
         datetime_obj += dt.timedelta(hours=h,minutes=m,seconds=s,milliseconds=0)
@@ -15,12 +15,10 @@ def get_gps_timestamp(date_str:str, time_str:str):
     h,m,s = time_str.split(':')
     if ss == 60:
         s= '00'
-        mm = mm + 1
-        m = str(mm)
+        m = str(mm+1)
         if mm == 60:
             m = '00'
-            hh+=1
-            h = str(h)
+            h = str(hh+1)
     time_part = ':'.join([h,m,s])
     time_str = time_part+'.'+ff
     datetime_str = dt.datetime.strptime(date_str+ ' '+time_str,'%Y.%m.%d %H:%M:%S.%f')
